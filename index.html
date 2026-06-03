@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-overlay">
+  <div class="loader-inner">
+    <div class="loader-ring"></div>
+    <p class="loader-text">Travel Buddy</p>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-card">
+    <div class="login-eyebrow">Private Access</div>
+    <h1 class="login-title">Travel<br><em>Buddy</em></h1>
+    <p class="login-sub">Your group's shared travel space.</p>
+    <div class="field-group">
+      <label class="field-label">Username</label>
+      <input class="field-input" type="text" id="login-user" placeholder="enter username" autocomplete="off">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="login-pass" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="doLogin()">
+      <span>Enter</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="login-error" id="login-error">Incorrect credentials.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header id="main-header">
+    <div class="header-left">
+      <button class="back-btn" id="back-btn" onclick="showDashboard()" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        All trips
+      </button>
+      <div class="brand" id="brand-label">Travel Buddy</div>
+    </div>
+    <div class="header-right">
+      <span class="sync-badge" id="sync-badge">synced</span>
+      <button class="btn-ghost-sm" onclick="doLogout()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="dash-hero">
+      <div>
+        <h2 class="dash-title">Our Trips</h2>
+        <p class="dash-sub">Every adventure, all in one place.</p>
+      </div>
+      <button class="btn-primary" onclick="openAddModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        New Journey
+      </button>
+    </div>
+    <div class="journeys-grid" id="journeys-grid"></div>
+  </div>
+
+  <!-- JOURNEY DETAIL -->
+  <div id="journey-detail" style="display:none;">
+    <div class="detail-hero" id="detail-hero">
+      <div class="detail-hero-inner">
+        <div class="detail-emoji" id="detail-emoji"></div>
+        <h2 class="detail-title" id="detail-title"></h2>
+        <p class="detail-meta" id="detail-meta"></p>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-bar">
+      <button class="tab-pill active" onclick="switchTab('todo',this)">To-Do</button>
+      <button class="tab-pill" onclick="switchTab('itinerary',this)">Itinerary</button>
+      <button class="tab-pill" onclick="switchTab('tips',this)">Tips</button>
+    </div>
+
+    <div class="detail-body">
+
+      <!-- TO-DO TAB -->
+      <div id="tab-todo" class="tab-pane active">
+        <div class="pane-header">
+          <h3 class="pane-title">To-Do List</h3>
+        </div>
+        <div class="add-row">
+          <input class="field-input" type="text" id="todo-input" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTodo()">
+          <button class="btn-add-item" onclick="addTodo()">Add</button>
+        </div>
+        <ul class="todo-list" id="todo-list"></ul>
+      </div>
+
+      <!-- ITINERARY TAB -->
+      <div id="tab-itinerary" class="tab-pane">
+        <div class="pane-header">
+          <h3 class="pane-title">Itinerary</h3>
+        </div>
+        <div class="timeline" id="timeline"></div>
+        <div class="add-row" style="margin-top:24px;">
+          <input class="field-input" type="text" id="new-day-input" placeholder="Add a day — e.g. Day 1 · Rome" onkeydown="if(event.key==='Enter')addDay()">
+          <button class="btn-add-item" onclick="addDay()">Add Day</button>
+        </div>
+      </div>
+
+      <!-- TIPS TAB -->
+      <div id="tab-tips" class="tab-pane">
+        <div class="pane-header">
+          <h3 class="pane-title">Tips & Tricks</h3>
+        </div>
+        <div id="tips-container"></div>
+        <div class="add-row" style="margin-top:16px; flex-wrap:wrap; gap:8px;">
+          <input class="field-input" type="text" id="tip-input" placeholder="Add a tip…" style="min-width:180px;" onkeydown="if(event.key==='Enter')addTip()">
+          <select class="field-select" id="tip-tag">
+            <option value="general">General</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="accommodation">Stay</option>
+            <option value="culture">Culture</option>
+          </select>
+          <button class="btn-add-item" onclick="addTip()">Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ADD JOURNEY MODAL -->
+<div class="modal-overlay" id="add-modal" onclick="handleModalClick(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>New Journey</h3>
+      <button class="modal-close" onclick="closeAddModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <label class="field-label">Destination</label>
+    <input class="field-input" type="text" id="new-title" placeholder="e.g. Kyoto, Japan" onkeydown="if(event.key==='Enter')addJourney()">
+    <div class="modal-row">
+      <div>
+        <label class="field-label">Start Date</label>
+        <input class="field-input" type="date" id="new-start">
+      </div>
+      <div>
+        <label class="field-label">End Date</label>
+        <input class="field-input" type="date" id="new-end">
+      </div>
+    </div>
+    <label class="field-label">Description</label>
+    <textarea class="field-input field-textarea" id="new-desc" placeholder="A few words about the trip…"></textarea>
+    <label class="field-label">Emoji</label>
+    <input class="field-input" type="text" id="new-emoji" placeholder="✈️" maxlength="4" style="max-width:100px;">
+    <div class="modal-actions">
+      <button class="btn-ghost-sm" onclick="closeAddModal()">Cancel</button>
+      <button class="btn-primary" onclick="addJourney()">Create Trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ENTRY MODAL -->
+<div class="modal-overlay" id="entry-modal" onclick="handleEntryModalClick(event)">
+  <div class="modal-card" style="max-width:420px;">
+    <div class="modal-header">
+      <h3>Add Entry</h3>
+      <button class="modal-close" onclick="closeEntryModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <label class="field-label">Time (optional)</label>
+    <input class="field-input" type="time" id="entry-time">
+    <label class="field-label">Activity</label>
+    <input class="field-input" type="text" id="entry-text" placeholder="e.g. Visit the Colosseum" onkeydown="if(event.key==='Enter')confirmEntry()">
+    <div class="modal-actions">
+      <button class="btn-ghost-sm" onclick="closeEntryModal()">Cancel</button>
+      <button class="btn-primary" onclick="confirmEntry()">Add Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Changes saved</div>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
