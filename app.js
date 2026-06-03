@@ -25,6 +25,11 @@ function doLogout() {
 
 // ── INIT ──
 window.addEventListener('load', async () => {
+  // hide everything immediately to prevent flash
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('loading-overlay').style.display = 'flex';
+
   try {
     const data = await fetchData();
     db = data;
@@ -33,6 +38,7 @@ window.addEventListener('load', async () => {
     db = { journeys: [] };
     console.error('Init error:', e);
   }
+
   document.getElementById('loading-overlay').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 });
@@ -147,7 +153,6 @@ function openJourney(i) {
   document.getElementById('journey-detail').style.display = 'block';
   document.getElementById('back-btn').style.display = 'inline-flex';
   document.getElementById('brand-label').style.display = 'none';
-  // reset to first tab
   switchTab('todo', document.querySelector('.tab-pill'));
   renderTodo();
   renderItinerary();
@@ -223,10 +228,10 @@ function renderItinerary() {
         <span class="timeline-day-label">${escHtml(day.label)}</span>
         <div class="day-actions">
           <button class="btn-day-entry" onclick="openEntryModal(${di})">+ Entry</button>
-          <button class="btn-day-del" onclick="deleteDay(${di})" title="Delete day">Delete day</button>
+          <button class="btn-day-del" onclick="deleteDay(${di})">Delete day</button>
         </div>
       </div>
-      <div class="timeline-entries" id="day-entries-${di}">
+      <div class="timeline-entries">
         ${renderEntries(day.entries || [], di)}
       </div>
     </div>
@@ -328,7 +333,6 @@ function renderTips() {
     container.innerHTML = '<p class="empty-msg">No tips yet — add one below.</p>';
     return;
   }
-  // Group by tag
   const groups = {};
   tips.forEach((t, i) => {
     const tag = t.tag || 'general';
